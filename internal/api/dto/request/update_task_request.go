@@ -7,6 +7,14 @@ type UpdateTaskRequest struct {
 	Status int    `json:"status"`
 }
 
+func (request *UpdateTaskRequest) Validate() error {
+	if request.Status != 0 && request.Status != 1 {
+		return ErrUnknownTaskStatus
+	}
+
+	return nil
+}
+
 func (request *UpdateTaskRequest) ToUpdateTaskInput(id string) *command.UpdateTaskInput {
 	return &command.UpdateTaskInput{
 		Id:     id,

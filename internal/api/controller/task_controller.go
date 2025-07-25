@@ -46,6 +46,13 @@ func (ctrl *TaskController) CreateTask(ctx *gin.Context) {
 		return
 	}
 
+	if err := createTaskRequest.Validate(); err != nil {
+		ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	createTaskOutput, err := ctrl.svc.CreateTask(createTaskRequest.ToCreateTaskInput())
 
 	if err != nil {
@@ -73,6 +80,13 @@ func (ctrl *TaskController) UpdateTask(ctx *gin.Context) {
 	if err := ctx.BindJSON(&updateTaskRequest); err != nil {
 		ctx.JSON(http.StatusBadRequest, map[string]string{
 			"error": "Bad request",
+		})
+		return
+	}
+
+	if err := updateTaskRequest.Validate(); err != nil {
+		ctx.JSON(http.StatusBadRequest, map[string]string{
+			"error": err.Error(),
 		})
 		return
 	}

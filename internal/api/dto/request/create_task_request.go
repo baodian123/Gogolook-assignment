@@ -7,6 +7,14 @@ type CreateTaskRequest struct {
 	Status int    `json:"status"`
 }
 
+func (request *CreateTaskRequest) Validate() error {
+	if request.Status != 0 && request.Status != 1 {
+		return ErrUnknownTaskStatus
+	}
+
+	return nil
+}
+
 func (request *CreateTaskRequest) ToCreateTaskInput() *command.CreateTaskInput {
 	return &command.CreateTaskInput{
 		Name:   request.Name,
