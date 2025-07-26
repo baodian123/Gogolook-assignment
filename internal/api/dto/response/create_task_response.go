@@ -1,5 +1,5 @@
 package response
 
 type CreateTaskResponse struct {
-	Id string
+	Id string `json:"id"`
 }

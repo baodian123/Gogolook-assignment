@@ -1,11 +1,7 @@
 package response
 
-import "time"
+import "github.com/baodian123/Gogolook-assignment/internal/api/dto/common"
 
 type UpdateTaskResponse struct {
-	Id       string
-	Name     string
-	Status   int
-	CreateAt time.Time
-	UpdateAt time.Time
+	common.TaskResponse
 }
