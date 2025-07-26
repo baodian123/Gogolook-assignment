@@ -209,3 +209,33 @@ func TestTask_CRUD_Flow(t *testing.T) {
 		t.Errorf("expected empty list after delete, got %v", listResp)
 	}
 }
+
+func TestUpdateTask_NotFound(t *testing.T) {
+	r := setupRouter()
+
+	nonExistentID := "non-existent-id"
+	updatePayload := map[string]interface{}{
+		"name":   "Should Not Exist",
+		"status": 1,
+	}
+	updateBody, _ := json.Marshal(updatePayload)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PUT", "/tasks/"+nonExistentID, bytes.NewBuffer(updateBody))
+	req.Header.Set("Content-Type", "application/json")
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404, got %d", w.Code)
+	}
+
+	var resp map[string]interface{}
+
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("invalid response json: %v", err)
+	}
+
+	if resp["error"] != "Task not found" {
+		t.Errorf("expected error 'Task not found', got %v", resp["error"])
+	}
+}
