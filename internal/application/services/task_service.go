@@ -1,6 +1,8 @@
 package services
 
 import (
+	"log"
+
 	"github.com/baodian123/Gogolook-assignment/internal/application/command"
 	"github.com/baodian123/Gogolook-assignment/internal/application/common"
 	"github.com/baodian123/Gogolook-assignment/internal/application/interfaces"
@@ -21,6 +23,8 @@ func (svc *TaskService) GetTaskList() (*query.TaskListQueryResult, error) {
 	tasks, err := svc.taskRepository.FindAll()
 
 	if err != nil {
+		log.Println("failed to get task list:", err)
+
 		return nil, err
 	}
 
@@ -45,6 +49,8 @@ func (svc *TaskService) CreateTask(input *command.CreateTaskInput) (*command.Cre
 	err := svc.taskRepository.Save(task)
 
 	if err != nil {
+		log.Println("failed to create task:", err)
+
 		return nil, err
 	}
 
@@ -55,6 +61,8 @@ func (svc *TaskService) UpdateTask(input *command.UpdateTaskInput) (*command.Upd
 	task, err := svc.taskRepository.Find(input.Id)
 
 	if err != nil {
+		log.Printf("failed to find task with id %s: %v", input.Id, err)
+
 		return nil, err
 	}
 
@@ -62,6 +70,8 @@ func (svc *TaskService) UpdateTask(input *command.UpdateTaskInput) (*command.Upd
 	task.Status = input.Status
 
 	if err := svc.taskRepository.Update(task); err != nil {
+		log.Println("failed to update task:", err)
+
 		return nil, err
 	}
 
@@ -78,6 +88,8 @@ func (svc *TaskService) UpdateTask(input *command.UpdateTaskInput) (*command.Upd
 
 func (svc *TaskService) DeleteTask(id string) error {
 	if err := svc.taskRepository.Delete(id); err != nil {
+		log.Printf("failed to delete task with id %s: %v", id, err)
+
 		return err
 	}
 

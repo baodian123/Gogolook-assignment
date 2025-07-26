@@ -6,6 +6,7 @@ import (
 	"github.com/baodian123/Gogolook-assignment/internal/api/dto/mapper"
 	"github.com/baodian123/Gogolook-assignment/internal/api/dto/request"
 	"github.com/baodian123/Gogolook-assignment/internal/application/interfaces"
+	"github.com/baodian123/Gogolook-assignment/internal/infrastructure/repository"
 	"github.com/gin-gonic/gin"
 )
 
@@ -94,9 +95,16 @@ func (ctrl *TaskController) UpdateTask(ctx *gin.Context) {
 	updateTaskOutput, err := ctrl.svc.UpdateTask(updateTaskRequest.ToUpdateTaskInput(id))
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, map[string]string{
-			"error": "Fail to update task",
-		})
+		if err == repository.ErrTaskNotFound {
+			ctx.JSON(http.StatusNotFound, map[string]string{
+				"error": "Task not found",
+			})
+		} else {
+			ctx.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Fail to update task",
+			})
+		}
+
 		return
 	}
 
